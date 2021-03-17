@@ -126,14 +126,14 @@ export default function Login() {
                 to="/forgot-password"
                 variant="body2"
               >
-                Forgot Password
+                Forgot Password?
               </Link>
             </Grid>
-            {/* <Grid item>
+            <Grid item>
               <Link component={RouterLink} to="/signup" variant="body2">
                 Don't have an account? Sign Up
               </Link>
-            </Grid> */}
+            </Grid>
           </Grid>
         </form>
       </div>

@@ -11,7 +11,7 @@ import Container from "@material-ui/core/Container";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { Box, CircularProgress } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { confirmSignup, getUser, setToken, login } from "./service";
+import { confirmSignup, getUser, setToken, signup, login } from "./service";
 import { UserContext } from "./UserContext";
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\^$*.[\]{}()?\-“!@#%&/,><’:;|_~`])\S{8,99}$/;
@@ -39,13 +39,13 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const classes = useStyles();
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
 
-  const [username, setUsername] = useState(params.get("username") || "");
+  const [username, setUsername] = useState("" || location.state?.username);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmationCode, setConfirmationCode] = useState(
-    params.get("confirmationCode") || ""
+  const [confirmationCode, setConfirmationCode] = useState("");
+  const [confirm, setConfirm] = useState(
+    location.state?.username ? true : false
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -68,6 +68,23 @@ export default function SignUp() {
     return true;
   };
 
+  const handleSignup = async (event) => {
+    setError(null);
+    event.preventDefault();
+    if (!validatePassword()) {
+      return;
+    }
+    try {
+      setLoading(true);
+      await signup(username, password);
+      setConfirm(true);
+    } catch (ex) {
+      setError("Error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleConfirm = async (event) => {
     setError(null);
     event.preventDefault();
@@ -82,7 +99,7 @@ export default function SignUp() {
       setUser(getUser());
       navigate("/", { replace: true });
     } catch (ex) {
-      setError(ex.response?.data);
+      setError("Error");
     } finally {
       setLoading(false);
     }
@@ -97,7 +114,11 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate onSubmit={handleConfirm}>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={confirm ? handleConfirm : handleSignup}
+        >
           <Box marginY={2} hidden={error === null ? true : false}>
             <Alert severity="error">{error}</Alert>
           </Box>
@@ -111,6 +132,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                disabled={confirm}
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
               />
@@ -121,7 +143,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="password"
-                label="New Password"
+                label="Password"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -142,7 +164,7 @@ export default function SignUp() {
                 onChange={(event) => setConfirmPassword(event.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} hidden={!confirm}>
               <TextField
                 variant="outlined"
                 required
@@ -164,18 +186,9 @@ export default function SignUp() {
             className={classes.submit}
             disabled={loading}
           >
-            {loading ? <CircularProgress /> : "Confirm Signup"}
+            {loading ? <CircularProgress /> : "Sign up"}
           </Button>
-          <Grid container justify="space-between">
-            <Grid item>
-              <Link
-                component={RouterLink}
-                variant="body2"
-                to="/resend-confirmation"
-              >
-                Resend Confirmation
-              </Link>
-            </Grid>
+          <Grid container justify="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/login" variant="body2">
                 Already have an account? Sign in

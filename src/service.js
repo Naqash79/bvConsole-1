@@ -63,7 +63,7 @@ export const forgotPassword = (Username) => {
 };
 
 export const setNewPassword = (Username, newPassword, verificationCode) => {
-  return Axios.put(url + "ForgotPassword", {
+  return Axios.post(url + "ForgotPassword", {
     Username,
     newPassword,
     verificationCode,
@@ -84,8 +84,4 @@ export const getUser = () => {
     return null;
   }
   return JSON.parse(localStorage.getItem("token"));
-};
-
-export const resendConfirmation = (Username) => {
-  return Axios.post(url + "SignUp", { type: "resendConfirmation", Username });
 };

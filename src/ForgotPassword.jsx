@@ -9,8 +9,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { forgotPassword } from "./service";
 import { Box, CircularProgress } from "@material-ui/core";
+import { forgotPassword, setNewPassword } from "./service";
 import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,18 +37,34 @@ export default function ForgotPassword() {
   const classes = useStyles();
 
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmationCode, setConfirmationCode] = useState("");
+  const [confirm, setConfirm] = useState(false);
   const [error, setError] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    setError(null);
+  const handleForgot = async (event) => {
     event.preventDefault();
+    setError(null);
     try {
       setLoading(true);
       await forgotPassword(username);
-      navigate("/reset-password");
+      setConfirm(true);
+    } catch (ex) {
+      setError(ex.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirm = async (event) => {
+    event.preventDefault();
+    setError(null);
+    try {
+      setLoading(true);
+      await setNewPassword(username, password, confirmationCode);
+      navigate("/login", { replace: true });
     } catch (ex) {
       setError(ex.response.data.message);
     } finally {
@@ -63,9 +79,13 @@ export default function ForgotPassword() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Send Reset Link
+          Forgot Password
         </Typography>
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={confirm ? handleConfirm : handleForgot}
+        >
           <Box marginY={2} hidden={error === null ? true : false}>
             <Alert severity="error">{error}</Alert>
           </Box>
@@ -79,8 +99,37 @@ export default function ForgotPassword() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                disabled={confirm}
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} hidden={!confirm}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} hidden={!confirm}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="confirmationCode"
+                label="Confirmation Code"
+                type="text"
+                id="confirmationCode"
+                autoComplete="confirmationCode"
+                value={confirmationCode}
+                onChange={(event) => setConfirmationCode(event.target.value)}
               />
             </Grid>
           </Grid>
@@ -92,9 +141,9 @@ export default function ForgotPassword() {
             className={classes.submit}
             disabled={loading}
           >
-            {loading ? <CircularProgress /> : "Send Reset Link"}
+            {loading ? <CircularProgress /> : "Reset"}
           </Button>
-          <Grid container justify="space-between">
+          <Grid container justify="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/login" variant="body2">
                 Back to Login

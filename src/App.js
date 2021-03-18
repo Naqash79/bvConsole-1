@@ -7,6 +7,8 @@ import { getUser, refreshToken } from "./service";
 import { useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import ForgotPassword from "./ForgotPassword";
+import ResendConfirmation from "./ResendConfirmation";
+import ResetPassword from "./ResetPassword";
 // import Background from './logo512.png';
 
 // var sectionStyle = {
@@ -30,8 +32,14 @@ const App = () => {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <Routes>
+        <Route path="resend-confirmation">
+          <ResendConfirmation />
+        </Route>
         <Route path="/forgot-password">
           <ForgotPassword />
+        </Route>
+        <Route path="/reset-password">
+          <ResetPassword />
         </Route>
         <Route path="/signup">
           <SignUp />

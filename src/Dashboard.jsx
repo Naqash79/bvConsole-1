@@ -30,14 +30,7 @@ const Dashboard = () => {
   }, [snackbar]);
 
   const columns = [
-    { title: "THE QUESTION", field: "question",editComponent: (props) => (
-      <TextField
-        multiline
-        fullWidth
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-      />
-    ), },
+    { title: "THE QUESTION", field: "question" },
     { title: "THE RESPONSE", field: "value" ,editComponent: (props) => (
       <TextField
         multiline

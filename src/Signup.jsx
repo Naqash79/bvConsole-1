@@ -34,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  textInput: {
+    background:"#fff",
+
+
+    borderRadius: "5px"
+  },
 }));
 
 export default function SignUp() {
@@ -105,6 +111,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
+                className={classes.textInput}
                 required
                 fullWidth
                 id="email"
@@ -118,6 +125,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
+                className={classes.textInput}
                 required
                 fullWidth
                 name="password"
@@ -132,6 +140,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
+                className={classes.textInput}
                 required
                 fullWidth
                 name="confirmPassword"
@@ -145,6 +154,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
+                className={classes.textInput}
                 required
                 fullWidth
                 id="confirmationCode"

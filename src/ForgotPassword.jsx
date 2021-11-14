@@ -31,6 +31,13 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  textInput: {
+    background:"#fff",
+
+
+    borderRadius: "5px"
+  },
+
 }));
 
 export default function ForgotPassword() {
@@ -72,6 +79,7 @@ export default function ForgotPassword() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
+              className={classes.textInput}
                 variant="outlined"
                 required
                 fullWidth

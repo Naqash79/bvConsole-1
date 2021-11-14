@@ -18,7 +18,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        document.body.style.backgroundImage= "url(./bv_main_Image.jpg)";
+       // document.body.style.backgroundImage= "url(./bv_main_Image.jpg)";
 
         const { data } = await getData();
         setData(data);

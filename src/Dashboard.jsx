@@ -18,6 +18,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        document.body.style.backgroundImage= "url(./bv_main_Image.jpg)";
+
         const { data } = await getData();
         setData(data);
       } catch (ex) {
@@ -120,6 +122,7 @@ const Dashboard = () => {
     localStorage.clear();
     window.location = "https://www.bonovox.net";
   };
+
 
   return (
     <Box margin={2}>
